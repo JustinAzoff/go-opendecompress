@@ -33,7 +33,10 @@ func TestDecompress(t *testing.T) {
 			if bytes.Compare(contents, expected) != 0 {
 				t.Fatalf("contents != expected: %s != %s", contents, expected)
 			}
-
+			err = df.Close()
+			if err != nil {
+				t.Fatalf("Failed to Close: %v", fn)
+			}
 		})
 	}
 }
