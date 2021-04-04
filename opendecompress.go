@@ -1,4 +1,4 @@
-package backend
+package opendecompress
 
 import (
 	"compress/bzip2"
@@ -53,7 +53,7 @@ func (wd *WrappedDecompressor) Close() error {
 	return wd.ReadCloser.Close()
 }
 
-func OpenDecompress(fn string) (r io.ReadCloser, err error) {
+func Open(fn string) (r io.ReadCloser, err error) {
 	f, err := os.Open(fn)
 	if err != nil {
 		return nil, err
@@ -62,8 +62,6 @@ func OpenDecompress(fn string) (r io.ReadCloser, err error) {
 	ext := filepath.Ext(fn)
 
 	switch ext {
-	case ".log", ".txt":
-		return f, err
 	case ".gz":
 		gzr, err := gzip.NewReader(f)
 		return &WrappedDecompressor{
@@ -80,6 +78,6 @@ func OpenDecompress(fn string) (r io.ReadCloser, err error) {
 		xzr, err := NewPipedDecompressor(f, "xzcat")
 		return xzr, err
 	default:
-		return f, err
+		return f, nil
 	}
 }
